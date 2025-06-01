@@ -2,6 +2,8 @@
 
 A simple example app for [Clapkit](https://github.com/macinlink/clapkit).
 
+![Screenshot](https://raw.githubusercontent.com/macinlink/clapkit-test/refs/heads/main/Clapkit-Test-App.png)
+
 ## Usage
 
 Make a build folder, switch to it.
