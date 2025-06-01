@@ -44,7 +44,6 @@ add_application(CKTest
     CREATOR "CKTS"
 
     main.cpp
-    tests.cpp
     cktest.r
 )
 
