@@ -1,6 +1,6 @@
 # CKTest
 
-A simple example app for Clapkit.
+A simple example app for [Clapkit](https://github.com/macinlink/clapkit).
 
 ## Usage
 
@@ -14,6 +14,8 @@ If you want debug logs,
 ```
 cmake -DCMAKE_BUILD_TYPE=Debug -DUSE_LOCAL_CLAPKIT=OFF ..
 ```
+
+**Note:** You'll need to have Macsbug installed for debug mode, or the application will crash on start. Debug mode also keeps track of memory usage and leaks.
 
 Else:
 ```
