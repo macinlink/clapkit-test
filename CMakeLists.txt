@@ -6,7 +6,7 @@ set(CMAKE_TOOLCHAIN_FILE "${RETRO68_PATH}/cmake/retro68.toolchain.cmake")
 
 project(clapkit VERSION 1.0)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Include Retro68 headers
@@ -19,9 +19,10 @@ endif()
 
 message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
 
-set(CLAPKIT_LOCAL_PATH "${CMAKE_SOURCE_DIR}/../clapkit")  # Local path for clapkit
+set(CLAPKIT_LOCAL_PATH "${CMAKE_SOURCE_DIR}/../clapkit")
+option(USE_LOCAL_CLAPKIT "Use local checkout of clapkit instead of fetching from Git" ON)
 
-if(EXISTS "${CLAPKIT_LOCAL_PATH}/CMakeLists.txt")
+if(USE_LOCAL_CLAPKIT AND EXISTS "${CLAPKIT_LOCAL_PATH}/CMakeLists.txt")
     message(STATUS "Using local clapkit at ${CLAPKIT_LOCAL_PATH}")
     add_subdirectory(${CLAPKIT_LOCAL_PATH} clapkit)
     set(USE_LOCAL_CLAPKIT ON)
@@ -39,15 +40,19 @@ endif()
 
 # Add application
 add_application(CKTest
+    TYPE "APPL"
+    CREATOR "CKTS"
+
     main.cpp
+    tests.cpp
     cktest.r
 )
 
 # Debug vs Release settings
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Configuring Debug Build")
-    target_compile_definitions(CKTest PRIVATE CKAPPDEBUG=1)
-    target_compile_definitions(clapkit PRIVATE CKAPPDEBUG=1)
+    target_compile_definitions(CKTest PRIVATE kCKAPPDEBUG=1)
+    target_compile_definitions(clapkit PRIVATE kCKAPPDEBUG=1)
 
     set_target_properties(CKTest PROPERTIES 
         COMPILE_FLAGS "-O0 -Wall -g -fdata-sections -ffunction-sections"

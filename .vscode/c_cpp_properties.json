@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "name": "Mac",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/**/**",
+                "~/Retro68/InterfacesAndLibraries/**",
+                "~/Retro68-build/toolchain/m68k-apple-macos/include/**",
+            ],
+            "defines": [],
+            "compilerPath": "",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-arm"
+        }
+    ],
+    "version": 4
+}

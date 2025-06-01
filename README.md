@@ -12,12 +12,12 @@ cd build
 
 If you want debug logs,
 ```
-cmake -DCMAKE_BUILD_TYPE=Debug ..
+cmake -DCMAKE_BUILD_TYPE=Debug -DUSE_LOCAL_CLAPKIT=OFF ..
 ```
 
 Else:
 ```
-cmake -DCMAKE_BUILD_TYPE=Release ..
+cmake -DCMAKE_BUILD_TYPE=Release -DUSE_LOCAL_CLAPKIT=OFF ..
 ```
 
 Then finally, make and run:
