@@ -4,6 +4,7 @@
 #include <ckLabel.h>
 #include <ckMenu.h>
 #include <ckRadiobox.h>
+#include <ckTextArea.h>
 #include <ckTextField.h>
 #include <ckTimer.h>
 #include <ckWindow.h>
@@ -177,6 +178,76 @@ int main() {
 		window->Show();
 	};
 
+	tests["Text Area"] = []() {
+		CKWindow* window = app->CKNewWindow(CKWindowInitParams(CKSize(300, 220)));
+		window->SetTitle("Text Area");
+		int padding = 10;
+		CKTextArea* label = CKNew CKTextArea(CKSize(300 - (padding * 2), 100));
+		label->rect->origin->x = padding;
+		label->rect->origin->y = padding;
+		window->AddControl(label);
+		label->SetText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
+
+		CKRadiobox* opt1 = CKNew CKRadiobox(CKSize(300 - (padding * 2), kCKRadioboxHeight));
+		opt1->rect->origin->x = padding;
+		opt1->rect->origin->y = 110 + padding;
+		opt1->SetText("Plain");
+		opt1->SetValue(true);
+		opt1->groupID = 1;
+		window->AddControl(opt1);
+		opt1->AddHandler(CKEventType::changed, [label](CKEvent e) {
+			label->multiline = true;
+			label->scrollType = CKScrollType::none;
+		});
+
+		CKRadiobox* opt2 = CKNew CKRadiobox(CKSize(300 - (padding * 2), kCKRadioboxHeight));
+		opt2->rect->origin->x = padding;
+		opt2->rect->origin->y = 110 + (padding + kCKRadioboxHeight * 1);
+		opt2->SetText("One-Line");
+		opt2->groupID = 1;
+		window->AddControl(opt2);
+		opt2->AddHandler(CKEventType::changed, [label](CKEvent e) {
+			label->multiline = false;
+			label->scrollType = CKScrollType::none;
+		});
+
+		CKRadiobox* opt3 = CKNew CKRadiobox(CKSize(300 - (padding * 2), kCKRadioboxHeight));
+		opt3->rect->origin->x = padding;
+		opt3->rect->origin->y = 110 + (padding + kCKRadioboxHeight * 2);
+		opt3->SetText("With Scrollbar (Vertical only)");
+		opt3->groupID = 1;
+		window->AddControl(opt3);
+		opt3->AddHandler(CKEventType::changed, [label](CKEvent e) {
+			label->multiline = true;
+			label->scrollType = CKScrollType::vertical;
+		});
+
+		CKRadiobox* opt4 = CKNew CKRadiobox(CKSize(300 - (padding * 2), kCKRadioboxHeight));
+		opt4->rect->origin->x = padding;
+		opt4->rect->origin->y = 110 + (padding + kCKRadioboxHeight * 3);
+		opt4->SetText("With Scrollbar (Horizontal only)");
+		opt4->groupID = 1;
+		window->AddControl(opt4);
+		opt4->AddHandler(CKEventType::changed, [label](CKEvent e) {
+			label->multiline = true;
+			label->scrollType = CKScrollType::horizontal;
+		});
+
+		CKRadiobox* opt5 = CKNew CKRadiobox(CKSize(300 - (padding * 2), kCKRadioboxHeight));
+		opt5->rect->origin->x = padding;
+		opt5->rect->origin->y = 110 + (padding + kCKRadioboxHeight * 4);
+		opt5->SetText("With Scrollbar (both)");
+		opt5->groupID = 1;
+		window->AddControl(opt5);
+		opt5->AddHandler(CKEventType::changed, [label](CKEvent e) {
+			label->multiline = true;
+			label->scrollType = CKScrollType::both;
+		});
+
+		window->Center();
+		window->Show();
+	};
+
 	/*** ---------------------------------------------------------------------- */
 	/*** Showcase button properties
 	/-------------------------------------------------------------------------- */
@@ -207,7 +278,7 @@ int main() {
 	};
 
 	/*** ---------------------------------------------------------------------- */
-	/*** Showcase button properties
+	/*** Showcase checkbox properties
 	/-------------------------------------------------------------------------- */
 
 	tests["Checkbox and Radios"] = []() {
