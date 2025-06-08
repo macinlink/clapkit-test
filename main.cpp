@@ -3,6 +3,8 @@
 #include <ckCheckbox.h>
 #include <ckLabel.h>
 #include <ckMenu.h>
+#include <ckNetClient.h>
+#include <ckNetworking.h>
 #include <ckRadiobox.h>
 #include <ckTextArea.h>
 #include <ckTextField.h>
@@ -363,6 +365,88 @@ int main() {
 		}
 		window->Center();
 		window->Show();
+	};
+
+	/*** ---------------------------------------------------------------------- */
+	/*** Networking
+	/-------------------------------------------------------------------------- */
+
+	tests["Networking"] = []() {
+		CKWindow* window = app->CKNewWindow(CKWindowInitParams(CKSize(300, 40)));
+		window->SetTitle("Networking");
+		if (!CKNetworking::IsAvailable()) {
+			CKLabel* lbl = CKNew CKLabel(CKRect(10, 10, 280, 20));
+			lbl->SetText("MacTCP is not installed/available.");
+			window->AddControl(lbl);
+			window->Center();
+			window->Show();
+			return;
+		}
+		if (!CKNetworking::IsInitialized()) {
+			CKError res = CKNetworking::Initialize();
+			if (res != CKPass) {
+				CKLabel* lbl = CKNew CKLabel(CKRect(10, 10, 280, 20));
+				char t[256];
+				sprintf(t, "Unable to set up networking, code: %lu", res);
+				lbl->SetText(t);
+				window->AddControl(lbl);
+				window->Center();
+				window->Show();
+				return;
+			}
+		}
+		window->rect->size->height += 20;
+
+		char t[256];
+		CKLabel* lbl1 = CKNew CKLabel(CKRect(10, 10, 280, 20));
+		CKIPAddress ip = CKNetworking::GetLocalIP();
+		sprintf(t, "IP of this device: %d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
+		lbl1->SetText(t);
+		window->AddControl(lbl1);
+
+		CKLabel* lbl2 = CKNew CKLabel(CKRect(10, 30, 280, 20));
+		lbl2->SetText("One second, please..");
+		window->AddControl(lbl2);
+
+		CKNetClient* socket = CKNew CKNetClient();
+		CKError res = socket->Connect("google.com", 80);
+
+		window->Center();
+		window->Show();
+
+		if (res != CKPass) {
+			sprintf(t, "Failed with code %u", res);
+			lbl2->SetText(t);
+		} else {
+			lbl2->SetText("Connecting, please wait...");
+
+			socket->AddHandler(CKEventType::tcpConnected, [lbl2, socket](CKEvent e) {
+				CKLog("Connected!");
+				lbl2->SetText("Connected!");
+				char data[256];
+				sprintf(data, "GET /contact HTTP/1.1\nHost: google.com\nUser-Agent: curl/8.6.0\nccept: */*\n\n");
+				socket->Write(data, strlen(data));
+			});
+
+			socket->AddHandler(CKEventType::tcpReceivedData, [lbl2, socket](CKEvent e) {
+				CKLog("Going to read data...");
+				void* buffer = CKMalloc(512);
+				short readBytes;
+				CKError r = socket->Read(buffer, 512, &readBytes);
+				if (r != CKPass) {
+					lbl2->SetText("Read failed!");
+					return;
+				}
+				CKLog("Read %d bytes.", readBytes);
+				char data[600];
+				sprintf(data, "Read: '%s'", buffer);
+				lbl2->SetText(data);
+			});
+
+			socket->AddHandler(CKEventType::tcpConnectionFailed, [lbl2](CKEvent e) {
+				lbl2->SetText("Could not connect to server.");
+			});
+		}
 	};
 
 	for (const auto& [name, test] : tests) {
